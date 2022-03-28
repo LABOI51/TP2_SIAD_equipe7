@@ -19,11 +19,8 @@ def calcul_econ(data, noeuds_1, noeuds_2, liste_noeuds):
     #Réaranger la liste afin qu'elle soit en ordre décroissant d'économies
     economies.sort(key=itemgetter(1), reverse=True)
     
-    #Créer une liste d'économies (poids) permettant d'être modifiée et reliant celles-ci au dictionnaire d'économies selon les arcs
-    poids = []
-    for c in economies:
-        poids.append(c[1])
-    return economies, poids
+    
+    return economies
 
 
 

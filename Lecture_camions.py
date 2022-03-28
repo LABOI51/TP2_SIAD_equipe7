@@ -1,7 +1,7 @@
 from importlib.metadata import distribution
 import openpyxl as pyxl
 
-def get_camions(path):
+def get_camions(path, liste_noeuds):
 
     #Ouvrir le fichier de données
     wb = pyxl.load_workbook(path, data_only=True)
@@ -21,7 +21,7 @@ def get_camions(path):
         effectifs.append((type.value, nombre_camions[i+1].value, capacite_camions[i+1].value))
 
     #Le dictionnaire nommé itinéraires peut être vu comme les variables de décision du problème. Il s'agit d'un dictionnaire dont les clées sont chaque camion par type,
-    #et la valeur de ces clées est une liste de noeuds traversés par ceux-ci. Dans ce module, ces valeurs seront des listes vides, évidemment.
+    #et la valeur de ces clées est une liste de noeuds traversés par ceux-ci. Dans ce module, ces valeurs seront des listes ayant comme premier et dernier élément le noeud initial
     #En même temps, une liste de ces clées est créée afin de pouvoir choisir un camion de façon aléatoire.
     itineraires = {}
     liste_clees = []
@@ -34,6 +34,6 @@ def get_camions(path):
         for j in range(i[1]):
             clee = (i[0], j+1)
             liste_clees.append(clee)
-            itineraires[clee] = []
+            itineraires[clee] = [liste_noeuds[0], liste_noeuds[0]]
 
     return effectifs, itineraires, liste_clees
