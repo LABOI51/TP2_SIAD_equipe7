@@ -27,26 +27,33 @@ def main():
     #Solutioner le problème une première fois:
 
     # Solve
-    sol = Clark_Wright.solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds)
+    state = False
+    while state is False and iteration <= iteration_max:
+        iteration += 1
+        sol, state = Clark_Wright.solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds)
+    if state is False:
+        raise ValueError("Le problème ne peut être solutionné avec les contraintes et les paramètres actuels.")
 
     # Fonction objectif
     val_sol = Fonction_objectif.eval_solution(sol, liste_clees, parametres, data)
 
     #Si la valeur de la fonction objectif est plus petite que la précédente, garder seulement cette solution et réitérer
+    iteration = 0
     while temps <= temps_max and iteration < iteration_max:
         end = time.time()
         temps = end - start
         iteration += 1
 
         #Solve
-        sol_temp = Clark_Wright.solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds)
+        sol_temp, state = Clark_Wright.solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds)
 
-        #Fonction objectif
-        val_sol_temp = Fonction_objectif.eval_solution(sol_temp, liste_clees, parametres, data)
+        if state is True:
+            #Fonction objectif
+            val_sol_temp = Fonction_objectif.eval_solution(sol_temp, liste_clees, parametres, data)
 
-        if val_sol_temp < val_sol:
-            val_sol = val_sol_temp
-            sol = sol_temp
+            if val_sol_temp < val_sol:
+                val_sol = val_sol_temp
+                sol = sol_temp
 
     print("\nMéthode utilisée : Heuristique de Clark & Wright simplifié")
     print("\n" + str(iteration) + " solutions trouvées en " + str(temps)[:5] + " secondes.")

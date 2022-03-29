@@ -13,10 +13,12 @@ def alea_camion(liste_clees):
 
 # Retourne le dicitonnaire d'itinéraires modifié et la liste des noeuds à traverser
 def attribution(economies, itineraires, clee_camion, noeuds, nombre_noeuds):
+
     # Création d'un itinéraire temporaire pour le camion et d'une liste temporaire de noeuds visités:
     temp = copy.deepcopy(itineraires)
     noeuds_temp = copy.deepcopy(noeuds)
-    # Ajout de la première paire de noeuds dans l'itinéraire temporaire si l'itinéraire est vide
+
+    # Ajout de la première paire de noeuds dans l'itinéraire temporaire si celui-ci est vide
     if len(temp[clee_camion]) == 2 and len(noeuds_temp) >= 3:
         for i in range(nombre_noeuds):
             noeud1 = economies[i][0][0]
@@ -73,6 +75,7 @@ def attribution(economies, itineraires, clee_camion, noeuds, nombre_noeuds):
 
 
 def check_capacite(data, parametres, chemin_a_verifier, camion_a_verifier):
+
     # Calculer d'abord la charge du chemin à vérifier:
     charge = 0
     for i, arret in enumerate(chemin_a_verifier[:-1]):
@@ -91,23 +94,26 @@ def check_capacite(data, parametres, chemin_a_verifier, camion_a_verifier):
             break
         else:
             continue
+
     # Vérifier si la solution temporaire est faisable avec la capacité du camion choisi
     if cap >= charge and cap is not None:
         return True
+
     else:
         return False
 
 
 def solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds):
+
     # Choix d'un camion initial au hasard:
     liste_utilises = []
     clee_camion = alea_camion(liste_clees)
     n_noeuds_tot = len(liste_clees)
-    resolu = False
+    state = False
 
     start = time.time()
     temps = 0
-    while resolu is False and temps <= 10:
+    while state is False and temps <= 10:
         end = time.time()
         temps = end-start
         solution_temp, liste_noeuds_temp, camion_a_verifier = attribution(
@@ -119,24 +125,29 @@ def solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds):
         )
         chemin_a_verifier = solution_temp[camion_a_verifier]
 
+        #Si la capacité du camion est supérieure à la charge associée au chemin, le nouveau chemin est considéré comme
+        #valide et un nouveau point est ajouté. S'il s'agissait du dernier noeud, le problème est considéré comme résolu
         if check_capacite(data, parametres, chemin_a_verifier, camion_a_verifier) is True:
             itineraires = copy.deepcopy(solution_temp)
             liste_noeuds = copy.deepcopy(liste_noeuds_temp)
             if len(liste_noeuds) == 1:
-                resolu = True
-                return itineraires
+                state = True
+                return itineraires, state
             else:
-                resolu = False
                 continue
+
+        # Si la capacité du camion est inférieure à la charge associée au chemin, le ou les nouveaux points sont retirés
+        # et le camion et changé:
         else:
             if len(itineraires[clee_camion]) != 2:
                 liste_utilises.append(clee_camion)
             # Changement de camion
             clee_camion = alea_camion(liste_clees)
+            # Si le camion a déja été traité, un différent est choisi. Si tous les camions ont déjà été choisis, le
+            # problème est considéré comme non_résolu
             while clee_camion in liste_utilises and len(liste_utilises) != len(liste_clees):
                 clee_camion = alea_camion(liste_clees)
             if len(liste_utilises) == len(liste_clees):
-                print("Tous les camions sont utilisés, mais tous les noeuds ne furent pas visités")
-                return itineraires
-    print("Il est impossible de résoudre ce problème avec la capacité actuelle de la flotte.")
-    return itineraires
+                return itineraires, state
+
+    return itineraires, state
