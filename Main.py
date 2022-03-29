@@ -1,15 +1,57 @@
+import time
+
 import Economies
 import Lecture_distances
 import Lecture_camions
-import Solve
+import Clark_Wright
+import Fonction_objectif
 
-#Setup
-path = "C:/Users/Laurent/Documents/Uni/SessionHiver2022/SIAD/TP2_SIAD_equipe7/Tests.xlsx"
-data, noeuds_1, noeuds_2, distances, liste_noeuds = Lecture_distances.get_data(path)
-effectifs, itineraires, liste_clees = Lecture_camions.get_camions(path, liste_noeuds)
-economies = Economies.calcul_econ(data, noeuds_1, noeuds_2, liste_noeuds)
 
-#Solve
-sol = Solve.solve(data, economies, effectifs, itineraires, liste_clees, liste_noeuds)
+def main():
 
-#Fonction objectif
+    #Setup
+    path = "Tests.xlsx"
+    data, noeuds_1, noeuds_2, liste_noeuds = Lecture_distances.get_data(path)
+    parametres, itineraires, liste_clees = Lecture_camions.get_camions(path, liste_noeuds)
+    economies = Economies.calcul_econ(data, noeuds_1, noeuds_2, liste_noeuds)
+
+    #Puisque la résolution est de nature aléatoire, il y aura plusieurs itérations de celle-ci pendant une période de temps fixe
+    # ou sur un nombre d'itérations maximum:
+    start = time.time()
+    temps = 0
+    temps_max = 30
+
+    iteration = 0
+    iteration_max = 10000
+
+    #Solutioner le problème une première fois:
+
+    # Solve
+    sol = Clark_Wright.solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds)
+
+    # Fonction objectif
+    val_sol = Fonction_objectif.eval_solution(sol, liste_clees, parametres, data)
+
+    #Si la valeur de la fonction objectif est plus petite que la précédente, garder seulement cette solution et réitérer
+    while temps <= temps_max and iteration < iteration_max:
+        end = time.time()
+        temps = end - start
+        iteration += 1
+
+        #Solve
+        sol_temp = Clark_Wright.solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds)
+
+        #Fonction objectif
+        val_sol_temp = Fonction_objectif.eval_solution(sol_temp, liste_clees, parametres, data)
+
+        if val_sol_temp < val_sol:
+            val_sol = val_sol_temp
+            sol = sol_temp
+
+    print("\nMéthode utilisée : Heuristique de Clark & Wright simplifié")
+    print("\n" + str(iteration) + " solutions trouvées en " + str(temps)[:5] + " secondes.")
+    print("\nMeilleure solution trouvée: ")
+    print(sol)
+    print("\nValeur de la fonction objectif de cette solution: " + str(val_sol))
+
+main()
