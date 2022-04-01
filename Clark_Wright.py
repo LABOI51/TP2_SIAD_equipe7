@@ -22,7 +22,7 @@ def attribution(economies, itineraires, clee_camion, noeuds, nombre_noeuds):
     if len(temp[clee_camion]) == 2 and len(noeuds_temp) >= 3:
         for i in range(nombre_noeuds):
             noeud1 = economies[i][0][0]
-            noeud2 = economies[i][0][2]
+            noeud2 = economies[i][0][-1]
             if noeud1 in noeuds_temp and noeud2 in noeuds_temp:
                 temp[clee_camion].insert(1, noeud1)
                 noeuds_temp.remove(noeud1)
@@ -47,13 +47,14 @@ def attribution(economies, itineraires, clee_camion, noeuds, nombre_noeuds):
             if noeud_ouvert1 in economies[i][0]:
                 # Si le noeud ouvert est le premier noeud de l'arc et que le second est disponible:
                 # Ajout de l'autre noeud dans l'itinéraire temporaire afin qu'il soit testé
-                if noeud_ouvert1 == economies[i][0][0] and economies[i][0][2] in noeuds_temp:
-                    temp[clee_camion].insert(1, economies[i][0][2])
-                    noeuds_temp.remove(economies[i][0][2])
+
+                if noeud_ouvert1 == economies[i][0][0] and economies[i][0][-1] in noeuds_temp:
+                    temp[clee_camion].insert(1, economies[i][0][-1])
+                    noeuds_temp.remove(economies[i][0][-1])
                     return temp, noeuds_temp, clee_camion
                 # Si le noeud ouvert est le second noeud de l'arc et que le premier est disponible:
                 # Ajout de l'autre noeud dans l'itinéraire temporaire afin qu'il soit testé
-                elif noeud_ouvert1 == economies[i][0][2] and economies[i][0][0] in noeuds_temp:
+                elif noeud_ouvert1 == economies[i][0][-1] and economies[i][0][0] in noeuds_temp:
                     temp[clee_camion].insert(1, economies[i][0][0])
                     noeuds_temp.remove(economies[i][0][0])
                     return temp, noeuds_temp, clee_camion
@@ -62,29 +63,33 @@ def attribution(economies, itineraires, clee_camion, noeuds, nombre_noeuds):
             elif noeud_ouvert2 in economies[i][0]:
                 # Si le noeud ouvert est le premier noeud de l'arc et que le second est disponible:
                 # Ajout de l'autre noeud dans l'itinéraire temporaire afin qu'il soit testé
-                if noeud_ouvert2 == economies[i][0][0] and economies[i][0][2] in noeuds_temp:
-                    temp[clee_camion].insert(-2, economies[i][0][2])
-                    noeuds_temp.remove(economies[i][0][2])
+                if noeud_ouvert2 == economies[i][0][0] and economies[i][0][-1] in noeuds_temp:
+                    temp[clee_camion].insert(-2, economies[i][0][-1])
+                    noeuds_temp.remove(economies[i][0][-1])
                     return temp, noeuds_temp, clee_camion
                 # Si le noeud ouvert est le second noeud de l'arc et que le premier est disponible:
                 # Ajout de l'autre noeud dans l'itinéraire temporaire afin qu'il soit testé
-                elif noeud_ouvert2 == economies[i][0][2] and economies[i][0][0] in noeuds_temp:
+                elif noeud_ouvert2 == economies[i][0][-1] and economies[i][0][0] in noeuds_temp:
                     temp[clee_camion].insert(-2, economies[i][0][0])
                     noeuds_temp.remove(economies[i][0][0])
                     return temp, noeuds_temp, clee_camion
 
 
-def check_capacite(data, parametres, chemin_a_verifier, camion_a_verifier):
+
+
+def check_capacite(data, parametres, chemin_a_verifier, camion_a_verifier, temps_gestion_noeuds):
 
     # Calculer d'abord la charge du chemin à vérifier:
     charge = 0
+
     for i, arret in enumerate(chemin_a_verifier[:-1]):
-        clee_arc = arret + ";" + str(chemin_a_verifier[i + 1])
+        clee_arc = (arret, chemin_a_verifier[i + 1])
         try:
             charge += data[clee_arc]
         except KeyError:
-            clee_arc = str(chemin_a_verifier[i + 1]) + ";" + arret
+            clee_arc = (chemin_a_verifier[i + 1],arret)
             charge += data[clee_arc]
+        charge += temps_gestion_noeuds[arret]
 
     # Trouver la capacité du type de camion utilisé pour ce chemin:
     type_camion = camion_a_verifier[0]
@@ -103,19 +108,20 @@ def check_capacite(data, parametres, chemin_a_verifier, camion_a_verifier):
         return False
 
 
-def solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds):
+def solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds, temps_gestion_noeuds):
 
     # Choix d'un camion initial au hasard:
     liste_utilises = []
     clee_camion = alea_camion(liste_clees)
-    n_noeuds_tot = len(liste_clees)
+    n_noeuds_tot = len(liste_noeuds)
     state = False
 
     start = time.time()
     temps = 0
-    while state is False and temps <= 10:
+    while state is False and temps <= 1:
         end = time.time()
         temps = end-start
+
         solution_temp, liste_noeuds_temp, camion_a_verifier = attribution(
             economies,
             itineraires,
@@ -123,11 +129,13 @@ def solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds):
             liste_noeuds,
             n_noeuds_tot
         )
+
         chemin_a_verifier = solution_temp[camion_a_verifier]
 
         #Si la capacité du camion est supérieure à la charge associée au chemin, le nouveau chemin est considéré comme
         #valide et un nouveau point est ajouté. S'il s'agissait du dernier noeud, le problème est considéré comme résolu
-        if check_capacite(data, parametres, chemin_a_verifier, camion_a_verifier) is True:
+
+        if check_capacite(data, parametres, chemin_a_verifier, camion_a_verifier, temps_gestion_noeuds) is True:
             itineraires = copy.deepcopy(solution_temp)
             liste_noeuds = copy.deepcopy(liste_noeuds_temp)
             if len(liste_noeuds) == 1:
@@ -137,7 +145,7 @@ def solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds):
                 continue
 
         # Si la capacité du camion est inférieure à la charge associée au chemin, le ou les nouveaux points sont retirés
-        # et le camion et changé:
+        # et le camion est changé:
         else:
             if len(itineraires[clee_camion]) != 2:
                 liste_utilises.append(clee_camion)

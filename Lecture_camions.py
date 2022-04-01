@@ -1,4 +1,3 @@
-from importlib.metadata import distribution
 import openpyxl as pyxl
 
 def get_camions(path, liste_noeuds):

@@ -10,11 +10,10 @@ import Fonction_objectif
 def main():
 
     #Setup
-    path = "Tests.xlsx"
-    data, noeuds_1, noeuds_2, liste_noeuds = Lecture_distances.get_data(path)
+    path = "DATA.xlsm"
+    data, noeuds_1, noeuds_2, liste_noeuds, temps_gestion_noeuds = Lecture_distances.get_data(path)
     parametres, itineraires, liste_clees = Lecture_camions.get_camions(path, liste_noeuds)
     economies = Economies.calcul_econ(data, noeuds_1, noeuds_2, liste_noeuds)
-
     #Puisque la résolution est de nature aléatoire, il y aura plusieurs itérations de celle-ci pendant une période de temps fixe
     # ou sur un nombre d'itérations maximum:
     start = time.time()
@@ -28,9 +27,9 @@ def main():
 
     # Solve
     state = False
-    while state is False and iteration <= iteration_max:
+    while state is False and iteration <= 20:
         iteration += 1
-        sol, state = Clark_Wright.solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds)
+        sol, state = Clark_Wright.solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds, temps_gestion_noeuds)
     if state is False:
         raise ValueError("Le problème ne peut être solutionné avec les contraintes et les paramètres actuels.")
 
@@ -45,7 +44,7 @@ def main():
         iteration += 1
 
         #Solve
-        sol_temp, state = Clark_Wright.solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds)
+        sol_temp, state = Clark_Wright.solve(data, economies, parametres, itineraires, liste_clees, liste_noeuds, temps_gestion_noeuds)
 
         if state is True:
             #Fonction objectif
