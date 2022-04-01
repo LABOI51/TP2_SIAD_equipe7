@@ -76,7 +76,6 @@ def attribution(economies, itineraires, clee_camion, noeuds, nombre_noeuds):
 
 
 
-
 def check_capacite(data, parametres, chemin_a_verifier, camion_a_verifier, temps_gestion_noeuds):
 
     # Calculer d'abord la charge du chemin à vérifier:
