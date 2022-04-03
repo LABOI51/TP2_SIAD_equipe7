@@ -23,10 +23,6 @@ def attribution(economies, itineraires, clee_op, noeuds, nombre_noeuds):
         for econ in economies:
             noeud1 = econ[0][0]
             noeud2 = econ[0][-1]
-            #print(noeud1)
-            #print(noeud2)
-            #print(noeuds_temp)
-            #print(len(noeuds_temp))
             if noeud1 in noeuds_temp and noeud2 in noeuds_temp:
                 temp[clee_op].insert(1, noeud1)
                 noeuds_temp.remove(noeud1)
