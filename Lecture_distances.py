@@ -31,7 +31,7 @@ def get_distance_data(path):
     #de la clée "1;2".
     data = {}
     for i, dist in enumerate(distances[1:]):
-        data[noeuds_1[i+1],noeuds_2[i+1]] = distances[i+1]
+        data[noeuds_1[i+1], noeuds_2[i+1]] = distances[i+1]
 
     #Créer une liste exhaustive des noeuds du problème:
     liste_noeuds = []
