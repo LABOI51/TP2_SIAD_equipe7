@@ -1,6 +1,14 @@
 import openpyxl as pyxl
 
-def get_data(path):
+
+def append_distance(noeud, object_to_append):
+    """Fonction permettant d'ajouter à un liste les valeurs extraites d'un fichier Excel."""
+    if noeud.value is not None:
+        object_to_append.append(noeud.value)
+
+
+def get_distance_data(path):
+    """Fonction permettant d'extraire les données de distances d'un fichier Excel."""
 
     #Ouvrir le fichier de données
     wb = pyxl.load_workbook(path, data_only=True)
@@ -9,8 +17,8 @@ def get_data(path):
     #Extraire les colonnes de distances entre les noeuds
     noeuds_1 = []
     for noeud in feuille["G"]:
-        if noeud.value is not None:
-            noeuds_1.append(noeud.value)
+        append_distance(noeud, noeuds_1)
+
     noeuds_2 = []
     for noeud in feuille["H"]:
         if noeud.value is not None:

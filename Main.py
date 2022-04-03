@@ -11,7 +11,7 @@ def main():
 
     #Setup
     path = "DATA.xlsm"
-    data, noeuds_1, noeuds_2, liste_noeuds, temps_gestion_noeuds = Lecture_distances.get_data(path)
+    data, noeuds_1, noeuds_2, liste_noeuds, temps_gestion_noeuds = Lecture_distances.get_distance_data(path)
     parametres, itineraires, liste_clees = Lecture_operateurs.get_operateurs(path, liste_noeuds)
     economies = Economies.calcul_econ(data, noeuds_1, noeuds_2, liste_noeuds)
     #Puisque la résolution est de nature aléatoire, il y aura plusieurs itérations de celle-ci pendant une période de temps fixe
@@ -64,6 +64,6 @@ def main():
     for i, trajet in enumerate(sol):
         print("\nJour " + str(i+1) + ":" + str(trajet))
 
-    print("\nValeur de la fonction objectif de cette solution: " + str(val_sol))
+    print("\nValeur de la fonction objectif de cette solution: " + str(round(val_sol, 2)))
 
 main()
