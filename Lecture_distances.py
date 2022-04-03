@@ -21,12 +21,12 @@ def get_distance_data(path):
 
     noeuds_2 = []
     for noeud in feuille["H"]:
-        if noeud.value is not None:
-            noeuds_2.append(noeud.value)
+        append_distance(noeud, noeuds_2)
+
     distances = []
     for dist in feuille["P"]:
-        if dist.value is not None:
-            distances.append(dist.value)
+        append_distance(dist, distances)
+
     #Créer une matrice de distances sous forme de dictionnaire, où la distance entre le noeud 1 et 2 est la valeur
     #de la clée "1;2".
     data = {}
