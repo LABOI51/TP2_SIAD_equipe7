@@ -27,9 +27,16 @@ def main():
 
     # Solve
     state = False
-    while state is False and iteration <= 20:
+    while state is False and iteration <= 50:
         iteration += 1
-        sol, state, jour = Clark_Wright.solve_probleme(data, economies, parametres, itineraires, liste_clees, liste_noeuds, temps_gestion_noeuds)
+        sol, state, jour = Clark_Wright.solve_probleme(data,
+                                                       economies,
+                                                       parametres,
+                                                       itineraires,
+                                                       liste_clees,
+                                                       liste_noeuds,
+                                                       temps_gestion_noeuds
+                                                       )
 
     if state is False:
         raise ValueError("Le problème ne peut être solutionné avec les contraintes et les paramètres actuels.")
@@ -46,7 +53,8 @@ def main():
         iteration += 1
 
         #Solve
-        sol_temp, state, jour_temp = Clark_Wright.solve_probleme(data, economies, parametres, itineraires, liste_clees, liste_noeuds, temps_gestion_noeuds)
+        sol_temp, state, jour_temp = Clark_Wright.solve_probleme(data, economies, parametres, itineraires,
+                                                                 liste_clees, liste_noeuds, temps_gestion_noeuds)
 
         if state is True:
             #Fonction objectif
