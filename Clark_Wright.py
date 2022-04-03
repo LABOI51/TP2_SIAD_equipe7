@@ -11,8 +11,14 @@ def alea_op(liste_clees):
     return clee_op
 
 
+def compute_cas_assignation(temp, clee_op, econ, noeuds_temp, insert_position):
+    temp[clee_op].insert(insert_position, econ)
+    noeuds_temp.remove(econ)
+    return temp, noeuds_temp, clee_op
+
+
 # Retourne le dicitonnaire d'itinéraires modifié et la liste des noeuds à traverser
-def attribution(economies, itineraires, clee_op, noeuds, nombre_noeuds):
+def attribution(economies, itineraires, clee_op, noeuds):
 
     # Création d'un itinéraire temporaire pour l'opérateur et d'une liste temporaire de noeuds visités:
     temp = copy.deepcopy(itineraires)
@@ -49,32 +55,26 @@ def attribution(economies, itineraires, clee_op, noeuds, nombre_noeuds):
             if noeud_ouvert1 in economies[i][0]:
                 # Si le noeud ouvert est le premier noeud de l'arc et que le second est disponible:
                 # Ajout de l'autre noeud dans l'itinéraire temporaire afin qu'il soit testé
-
+                
                 if noeud_ouvert1 == economies[i][0][0] and economies[i][0][-1] in noeuds_temp:
-                    temp[clee_op].insert(1, economies[i][0][-1])
-                    noeuds_temp.remove(economies[i][0][-1])
-                    return temp, noeuds_temp, clee_op
+                    return compute_cas_assignation(temp, clee_op, economies[i][0][-1], noeuds_temp, 1)
+
                 # Si le noeud ouvert est le second noeud de l'arc et que le premier est disponible:
                 # Ajout de l'autre noeud dans l'itinéraire temporaire afin qu'il soit testé
                 elif noeud_ouvert1 == economies[i][0][-1] and economies[i][0][0] in noeuds_temp:
-                    temp[clee_op].insert(1, economies[i][0][0])
-                    noeuds_temp.remove(economies[i][0][0])
-                    return temp, noeuds_temp, clee_op
+                    return compute_cas_assignation(temp, clee_op, economies[i][0][0], noeuds_temp, 1)
 
             # Même chose mais avec le noeud final du chemin
             elif noeud_ouvert2 in economies[i][0]:
                 # Si le noeud ouvert est le premier noeud de l'arc et que le second est disponible:
                 # Ajout de l'autre noeud dans l'itinéraire temporaire afin qu'il soit testé
                 if noeud_ouvert2 == economies[i][0][0] and economies[i][0][-1] in noeuds_temp:
-                    temp[clee_op].insert(-2, economies[i][0][-1])
-                    noeuds_temp.remove(economies[i][0][-1])
-                    return temp, noeuds_temp, clee_op
+                    return compute_cas_assignation(temp, clee_op, economies[i][0][-1], noeuds_temp, -2)
+
                 # Si le noeud ouvert est le second noeud de l'arc et que le premier est disponible:
                 # Ajout de l'autre noeud dans l'itinéraire temporaire afin qu'il soit testé
                 elif noeud_ouvert2 == economies[i][0][-1] and economies[i][0][0] in noeuds_temp:
-                    temp[clee_op].insert(-2, economies[i][0][0])
-                    noeuds_temp.remove(economies[i][0][0])
-                    return temp, noeuds_temp, clee_op
+                    return compute_cas_assignation(temp, clee_op, economies[i][0][0], noeuds_temp, -2)
 
 
 def check_capacite(data, parametres, chemin_a_verifier, op_a_verifier, temps_gestion_noeuds):
@@ -113,7 +113,6 @@ def solve_jour(data, economies, parametres, itineraires, liste_clees, liste_noeu
     # Choix d'un opérateur initial au hasard:
     liste_utilises = []
     clee_op = alea_op(liste_clees)
-    n_noeuds_tot = len(liste_noeuds)
     state = False
 
     iteration = 0
@@ -123,7 +122,6 @@ def solve_jour(data, economies, parametres, itineraires, liste_clees, liste_noeu
             itineraires,
             clee_op,
             liste_noeuds,
-            n_noeuds_tot
         )
         iteration += 1
         chemin_a_verifier = solution_temp[op_a_verifier]
