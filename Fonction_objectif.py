@@ -1,4 +1,6 @@
 def recherche_params(parametres, operateur):
+    """Fonction permettant d'identifier et de retourner les paramètres concernant un type d'opérateur donné, ceux-ci
+    se trouvant dans une liste de dicitonnaires (parametres)"""
     for params in parametres:
         # Si le type d'opérateur concorde avec celui de la liste de paramètres:
         if operateur[0] == params["Type"]:
@@ -9,7 +11,8 @@ def recherche_params(parametres, operateur):
     raise ValueError("Le type d'opérateur ne se retrouve pas dans les paramètres.")
 
 
-def calcul_cout(solution, data, operateur):
+def calcul_distance(solution, data, operateur):
+    """Fonction permettant de calculer la distance associée à un itinéraire donné"""
     # Retrouver la solution de l'operateur à l'étude:
     chemin = solution[operateur]
 
@@ -30,28 +33,31 @@ def calcul_cout(solution, data, operateur):
         return c_dist
 
 
-def evaluation_operateur(solution, parametres, data, liste_clees, operateur):
+def evaluation_operateur(solution, parametres, data, operateur):
+    """Fonction permettant d'évaluer le coût associé au trajet de chaque opérateur pour un jour donné."""
 
-        #Recherche dans les paramètres pour trouver les informations nécessaires:
-        c_fixe, c_var = recherche_params(parametres, operateur)
+    #Recherche dans les paramètres pour trouver les informations nécessaires:
+    c_fixe, c_var = recherche_params(parametres, operateur)
 
-        #Calcul de la distance parcourue par l'operateur à l'étude:
-        distance = calcul_cout(solution, data, operateur)
+    #Calcul de la distance parcourue par l'operateur à l'étude:
+    distance = calcul_distance(solution, data, operateur)
 
-        #Calcul du coût total de l'operateur
-        if distance == 0:
-            return 0
-        else:
-            c_operateur = c_fixe + (c_var * distance)
-        return c_operateur
+    #Calcul du coût total de l'operateur
+    if distance == 0:
+        return 0
+    else:
+        c_operateur = c_fixe + (c_var * distance)
+    return c_operateur
 
 
 def eval_solution(solution_globale, liste_clees, parametres, data):
+    """Fonction permettant d'évaluer le coût d'une solution donnée."""
+
     #Évaluation de la valeur totale de la solution de la journée:
     val_solution = 0
     for sol_jour in solution_globale:
         for operateur in liste_clees:
-            val_solution += evaluation_operateur(sol_jour, parametres, data, liste_clees, operateur)
+            val_solution += evaluation_operateur(sol_jour, parametres, data, operateur)
     return val_solution
 
 

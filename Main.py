@@ -8,6 +8,7 @@ import Fonction_objectif
 
 
 def main():
+    """Fonction permettant de lancer la résolution du problème par l'heuristique de Clarke & Wright simplifié."""
 
     #Setup
     path = "DATA.xlsm"

@@ -3,6 +3,7 @@ import openpyxl as pyxl
 
 def append_distance(noeud, object_to_append):
     """Fonction permettant d'ajouter à un liste les valeurs extraites d'un fichier Excel."""
+
     if noeud.value is not None:
         object_to_append.append(noeud.value)
 

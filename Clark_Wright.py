@@ -2,16 +2,19 @@ from random import randint
 import copy
 
 
-###Attribution d'un itinéraire à un opérateur au hasard###
-# Choix aléatoire d'un opérateur:
+
 def alea_op(liste_clees):
-    # Choix aléatoire du opérateur:
+    """Fonction permettant d'obtenir un opérateur au hasard.'"""
+
     alea = randint(0, len(liste_clees) - 1)
     clee_op = liste_clees[alea]
     return clee_op
 
 
 def compute_cas_assignation(temp, clee_op, econ, noeuds_temp, insert_position):
+    """Fonction permettant d'ajouter un noeud à l'itinéraire d'un opérateur donné selon certaines conditions
+     et retirant celui-ci de la liste de noeuds à traverser."""
+
     temp[clee_op].insert(insert_position, econ)
     noeuds_temp.remove(econ)
     return temp, noeuds_temp, clee_op
@@ -19,6 +22,7 @@ def compute_cas_assignation(temp, clee_op, econ, noeuds_temp, insert_position):
 
 # Retourne le dicitonnaire d'itinéraires modifié et la liste des noeuds à traverser
 def attribution(economies, itineraires, clee_op, noeuds):
+    """Fonction attribuant un ou plusieurs noeuds à l'itinéraire d'opérateurs."""
 
     # Création d'un itinéraire temporaire pour l'opérateur et d'une liste temporaire de noeuds visités:
     temp = copy.deepcopy(itineraires)
@@ -78,6 +82,7 @@ def attribution(economies, itineraires, clee_op, noeuds):
 
 
 def check_capacite(data, parametres, chemin_a_verifier, op_a_verifier, temps_gestion_noeuds):
+    """Fonction vérifiant si l'itinéraire temporaire à évaluer est possible selon la capacité de l'opérateur."""
 
     # Calculer d'abord la charge du chemin à vérifier:
     charge = 0
@@ -109,6 +114,7 @@ def check_capacite(data, parametres, chemin_a_verifier, op_a_verifier, temps_ges
 
 
 def solve_jour(data, economies, parametres, itineraires, liste_clees, liste_noeuds, temps_gestion_noeuds):
+    """Fonction permettant d'assigner les tâches aux opérateurs pour un jour donné."""
 
     # Choix d'un opérateur initial au hasard:
     liste_utilises = []
@@ -153,8 +159,10 @@ def solve_jour(data, economies, parametres, itineraires, liste_clees, liste_noeu
                 return itineraires, state, liste_noeuds
     return itineraires, state, liste_noeuds
 
-#Résolution du problème sur plusieurs jours
+
 def solve_probleme(data, economies, parametres, itineraires, liste_clees, noeuds_restants, temps_gestion_noeuds):
+    """Fonction englobant toutes les autres de ce module. Permet de résoudre le problème sur plusieurs jours."""
+
     solution = []
     jour = 0
     state = False

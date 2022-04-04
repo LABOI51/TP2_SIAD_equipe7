@@ -1,6 +1,8 @@
 import openpyxl as pyxl
 
 def get_operateurs(path, liste_noeuds):
+    """Fonction permettant d'extraire les paramètres de chaque opérateurs du problème d'un fichier Excel.
+    Elle permet aussi de créer la structure de variables de décision vides pour une journée donnée."""
 
     #Ouvrir le fichier de données
     wb = pyxl.load_workbook(path, data_only=True)
@@ -28,9 +30,10 @@ def get_operateurs(path, liste_noeuds):
         parametres[i]["Coûts variables"] = couts_var[i+1].value
 
 
-    #Le dictionnaire nommé itinéraires peut être vu comme les variables de décision du problème. Il s'agit d'un dictionnaire dont les clées sont chaque opérateur par type,
-    #et la valeur de ces clées est une liste de noeuds traversés par ceux-ci. Dans ce module, ces valeurs seront des listes ayant comme premier et dernier élément le noeud initial
-    #En même temps, une liste de ces clées est créée afin de pouvoir choisir un opérateur de façon aléatoire.
+    #Le dictionnaire nommé itinéraires peut être vu comme les variables de décision du problème. Il s'agit d'un
+    #dictionnaire dont les clées sont chaque opérateur par type,et la valeur de ces clées est une liste de noeuds
+    #traversés par ceux-ci. Ces valeurs seront des listes ayant comme premier et dernier élément le noeud
+    #initial. En même temps, une liste de ces clées est créée afin de pouvoir choisir un opérateur de façon aléatoire.
     itineraires = {}
     liste_clees = []
     #Calculer le nombre total d'opérateurs (d'entrées dans le dictionnaire)

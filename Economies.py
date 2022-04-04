@@ -1,6 +1,8 @@
 from operator import itemgetter
 
 def calcul_econ(data, noeuds_1, noeuds_2, liste_noeuds):
+    """Fonction permettant de calculer les économies associées à la connexion de chaque noeuds les uns avec les autres."""
+
     #Créer deux vecteurs dont les éléments ont une contrepartie à la même positions;
     #ils représentent des arcs potentiels à lier au point initial
     arc_potentiel_1 = noeuds_1[(len(liste_noeuds)-1):]
