@@ -43,7 +43,8 @@ def main():
         raise ValueError("Le problème ne peut être solutionné avec les contraintes et les paramètres actuels.")
 
     # Fonction objectif
-    val_sol = Fonction_objectif.eval_solution(sol, liste_clees, parametres, data)
+    val_sol = Fonction_objectif.eval_solution(sol, liste_clees, parametres,
+                                              data, temps_gestion_noeuds)
 
     #Si la valeur de la fonction objectif est plus petite que la précédente, garder seulement cette solution et réitérer
     iteration = 0
@@ -59,7 +60,8 @@ def main():
 
         if state is True:
             #Fonction objectif
-            val_sol_temp = Fonction_objectif.eval_solution(sol_temp, liste_clees, parametres, data)
+            val_sol_temp = Fonction_objectif.eval_solution(sol_temp, liste_clees, parametres,
+                                                           data, temps_gestion_noeuds)
 
             if val_sol_temp < val_sol:
                 val_sol = val_sol_temp
