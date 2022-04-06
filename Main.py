@@ -24,7 +24,8 @@ def main():
     else:
         txt_methode = "l'heuristique de Clarke & Wright"
 
-    print("Évaluation de la solution selon " + txt_methode + "...")
+    print("\nCette opération devrait durer entre 30 et 120 secondes.")
+    print("Évaluation de la solution à l'aide de " + txt_methode + "... ")
 
     #Puisque la résolution est de nature aléatoire, il y aura plusieurs itérations de celle-ci pendant une période de temps fixe
     # ou sur un nombre d'itérations maximum:
