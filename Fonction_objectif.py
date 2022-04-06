@@ -62,5 +62,3 @@ def eval_solution(solution_globale, liste_clees, parametres, data, temps_gestion
         for operateur in liste_clees:
             val_solution += evaluation_operateur(sol_jour, parametres, data, operateur, temps_gestion_noeuds)
     return val_solution
-
-

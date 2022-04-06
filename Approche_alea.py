@@ -11,74 +11,21 @@ def alea_op(liste_clees):
     return clee_op
 
 
-def compute_cas_assignation(temp, clee_op, econ, noeuds_temp, insert_position):
-    """Fonction permettant d'ajouter un noeud à l'itinéraire d'un opérateur donné selon certaines conditions
-     et retirant celui-ci de la liste de noeuds à traverser."""
-
-    temp[clee_op].insert(insert_position, econ)
-    noeuds_temp.remove(econ)
-    return temp, noeuds_temp, clee_op
-
 # Retourne le dicitonnaire d'itinéraires modifié et la liste des noeuds à traverser
-def attribution_CW(economies, itineraires, clee_op, noeuds):
-    """Fonction attribuant un ou plusieurs noeuds à l'itinéraire d'opérateurs selon l'heuristique de Clark & Wright."""
+def attribution_alea(itineraires, clee_op, noeuds):
+    """Fonction attribuant un noeud à l'itinéraire d'opérateurs."""
 
     # Création d'un itinéraire temporaire pour l'opérateur et d'une liste temporaire de noeuds visités:
     temp = copy.deepcopy(itineraires)
     noeuds_temp = copy.deepcopy(noeuds)
 
-    # Ajout de la première paire de noeuds dans l'itinéraire temporaire si celui-ci est vide
-    if len(temp[clee_op]) == 2 and len(noeuds_temp) >= 3:
-        for econ in economies:
-            noeud1 = econ[0][0]
-            noeud2 = econ[0][-1]
-            if noeud1 in noeuds_temp and noeud2 in noeuds_temp:
-                temp[clee_op].insert(1, noeud1)
-                noeuds_temp.remove(noeud1)
-                temp[clee_op].insert(2, noeud2)
-                noeuds_temp.remove(noeud2)
-                return temp, noeuds_temp, clee_op
+    #Attribution d'un noeud aléatoire à l'itinéraire temporaire, sauf le noeud initial
+    rand = randint(1, len(noeuds_temp)-1)
+    noeud_alea = noeuds_temp[rand]
+    temp[clee_op].insert(-1, noeud_alea)
+    noeuds_temp.remove(noeud_alea)
 
-
-    #Cas où il ne reste qu'un noeud à ajouter et il s'agit d'un nouvel opérateur
-    elif len(temp[clee_op]) == 2 and len(noeuds_temp) == 2:
-        temp[clee_op].insert(1, noeuds_temp[1])
-        noeuds_temp.remove(noeuds_temp[1])
-        return temp, noeuds_temp, clee_op
-
-    # Ajout d'un noeud dans l'itinéraire s'il y a déjà un noeud présent
-    else:
-        # Choix du noeud le plus avantageux à lier au premier noeud ou au dernier noeud de la chaine
-        noeud_ouvert1 = temp[clee_op][1]
-        noeud_ouvert2 = temp[clee_op][-2]
-
-        for i in range(len(economies)):
-
-            # Vérifie si le noeud ouvert 1 constitue l'un des deux noeuds de l'arc étudié
-            if noeud_ouvert1 in economies[i][0]:
-                # Si le noeud ouvert est le premier noeud de l'arc et que le second est disponible:
-                # Ajout de l'autre noeud dans l'itinéraire temporaire afin qu'il soit testé
-                
-                if noeud_ouvert1 == economies[i][0][0] and economies[i][0][-1] in noeuds_temp:
-                    return compute_cas_assignation(temp, clee_op, economies[i][0][-1], noeuds_temp, 1)
-
-                # Si le noeud ouvert est le second noeud de l'arc et que le premier est disponible:
-                # Ajout de l'autre noeud dans l'itinéraire temporaire afin qu'il soit testé
-                elif noeud_ouvert1 == economies[i][0][-1] and economies[i][0][0] in noeuds_temp:
-                    return compute_cas_assignation(temp, clee_op, economies[i][0][0], noeuds_temp, 1)
-
-            # Même chose mais avec le noeud final du chemin
-            elif noeud_ouvert2 in economies[i][0]:
-                # Si le noeud ouvert est le premier noeud de l'arc et que le second est disponible:
-                # Ajout de l'autre noeud dans l'itinéraire temporaire afin qu'il soit testé
-                if noeud_ouvert2 == economies[i][0][0] and economies[i][0][-1] in noeuds_temp:
-                    return compute_cas_assignation(temp, clee_op, economies[i][0][-1], noeuds_temp, -2)
-
-                # Si le noeud ouvert est le second noeud de l'arc et que le premier est disponible:
-                # Ajout de l'autre noeud dans l'itinéraire temporaire afin qu'il soit testé
-                elif noeud_ouvert2 == economies[i][0][-1] and economies[i][0][0] in noeuds_temp:
-                    return compute_cas_assignation(temp, clee_op, economies[i][0][0], noeuds_temp, -2)
-
+    return temp, noeuds_temp, clee_op
 
 def check_capacite(data, parametres, chemin_a_verifier, op_a_verifier, temps_gestion_noeuds):
     """Fonction vérifiant si l'itinéraire temporaire à évaluer est possible selon la capacité de l'opérateur."""
@@ -91,7 +38,7 @@ def check_capacite(data, parametres, chemin_a_verifier, op_a_verifier, temps_ges
         try:
             charge += data[clee_arc]
         except KeyError:
-            clee_arc = (chemin_a_verifier[i + 1], arret)
+            clee_arc = (chemin_a_verifier[i + 1],arret)
             charge += data[clee_arc]
         charge += temps_gestion_noeuds[arret]
 
@@ -112,8 +59,7 @@ def check_capacite(data, parametres, chemin_a_verifier, op_a_verifier, temps_ges
         return False
 
 
-def solve_jour(data, economies, parametres, itineraires, liste_clees,
-               liste_noeuds, temps_gestion_noeuds):
+def solve_jour(data, parametres, itineraires, liste_clees, liste_noeuds, temps_gestion_noeuds):
     """Fonction permettant d'assigner les tâches aux opérateurs pour un jour donné."""
 
     # Choix d'un opérateur initial au hasard:
@@ -123,8 +69,8 @@ def solve_jour(data, economies, parametres, itineraires, liste_clees,
 
     iteration = 0
     while state is False and iteration <= 1000:
-        solution_temp, liste_noeuds_temp, op_a_verifier = attribution_CW(economies, itineraires,
-                                                                            clee_op, liste_noeuds)
+        solution_temp, liste_noeuds_temp, op_a_verifier = attribution_alea(itineraires, clee_op, liste_noeuds)
+
 
         iteration += 1
         chemin_a_verifier = solution_temp[op_a_verifier]
@@ -157,8 +103,7 @@ def solve_jour(data, economies, parametres, itineraires, liste_clees,
     return itineraires, state, liste_noeuds
 
 
-def solve_probleme(data, economies, parametres, itineraires, liste_clees,
-                   noeuds_restants, temps_gestion_noeuds):
+def solve_probleme(data, parametres, itineraires, liste_clees, noeuds_restants, temps_gestion_noeuds):
     """Fonction englobant toutes les autres de ce module. Permet de résoudre le problème sur plusieurs jours."""
 
     solution = []
@@ -166,7 +111,6 @@ def solve_probleme(data, economies, parametres, itineraires, liste_clees,
     state = False
     while state is False and jour <= 15:
         itineraires_jour, state, noeuds_restants = solve_jour(data,
-                                                              economies,
                                                               parametres,
                                                               itineraires,
                                                               liste_clees,
