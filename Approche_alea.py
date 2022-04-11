@@ -68,7 +68,7 @@ def solve_jour(data, parametres, itineraires, liste_clees, liste_noeuds, temps_g
     state = False
 
     iteration = 0
-    while state is False and iteration <= 1000:
+    while state is False and iteration <= 50:
         solution_temp, liste_noeuds_temp, op_a_verifier = attribution_alea(itineraires, clee_op, liste_noeuds)
 
         iteration += 1

@@ -19,7 +19,7 @@ def compute_cas_assignation(temp, clee_op, econ, noeuds_temp, insert_position):
     noeuds_temp.remove(econ)
     return temp, noeuds_temp, clee_op
 
-# Retourne le dicitonnaire d'itinéraires modifié et la liste des noeuds à traverser
+
 def attribution_CW(economies, itineraires, clee_op, noeuds):
     """Fonction attribuant un ou plusieurs noeuds à l'itinéraire d'opérateurs selon l'heuristique de Clark & Wright."""
 
@@ -38,7 +38,6 @@ def attribution_CW(economies, itineraires, clee_op, noeuds):
                 temp[clee_op].insert(2, noeud2)
                 noeuds_temp.remove(noeud2)
                 return temp, noeuds_temp, clee_op
-
 
     #Cas où il ne reste qu'un noeud à ajouter et il s'agit d'un nouvel opérateur
     elif len(temp[clee_op]) == 2 and len(noeuds_temp) == 2:
@@ -122,7 +121,7 @@ def solve_jour(data, economies, parametres, itineraires, liste_clees,
     state = False
 
     iteration = 0
-    while state is False and iteration <= 1000:
+    while state is False and iteration <= 50:
         solution_temp, liste_noeuds_temp, op_a_verifier = attribution_CW(economies, itineraires,
                                                                             clee_op, liste_noeuds)
 
