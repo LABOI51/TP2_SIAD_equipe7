@@ -38,7 +38,7 @@ def check_capacite(data, parametres, chemin_a_verifier, op_a_verifier, temps_ges
         try:
             charge += data[clee_arc]
         except KeyError:
-            clee_arc = (chemin_a_verifier[i + 1],arret)
+            clee_arc = (chemin_a_verifier[i + 1], arret)
             charge += data[clee_arc]
         charge += temps_gestion_noeuds[arret]
 
@@ -71,7 +71,6 @@ def solve_jour(data, parametres, itineraires, liste_clees, liste_noeuds, temps_g
     while state is False and iteration <= 1000:
         solution_temp, liste_noeuds_temp, op_a_verifier = attribution_alea(itineraires, clee_op, liste_noeuds)
 
-
         iteration += 1
         chemin_a_verifier = solution_temp[op_a_verifier]
 
@@ -98,6 +97,7 @@ def solve_jour(data, parametres, itineraires, liste_clees, liste_noeuds, temps_g
             # et utilisés, le problème est considéré comme non_résolu, et le jour suivant est débuté
             while clee_op in liste_utilises and len(liste_utilises) != len(liste_clees):
                 clee_op = alea_op(liste_clees)
+            #Si les opérateurs sont tous utilisés, la journée est considérée comme terminée
             if len(liste_utilises) == len(liste_clees):
                 return itineraires, state, liste_noeuds
     return itineraires, state, liste_noeuds

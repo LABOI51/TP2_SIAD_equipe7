@@ -8,6 +8,7 @@ import Economies
 import Fonction_objectif
 import UI
 
+
 def main():
     """Fonction permettant de lancer la résolution du problème par l'heuristique de Clarke & Wright simplifié."""
 
@@ -18,28 +19,19 @@ def main():
     economies = Economies.calcul_econ(data, noeuds_1, noeuds_2, liste_noeuds)
 
     #Choix de la méthode
-    methode = UI.choix_methode()
+    methode, temps_max = UI.choix_methode()
     if methode == "1":
         txt_methode = "la méthode aléatoire"
     else:
         txt_methode = "l'heuristique de Clarke & Wright"
 
-    print("\nCette opération devrait durer entre 30 et 120 secondes.")
-    print("Évaluation de la solution à l'aide de " + txt_methode + "... ")
+    print("\nÉvaluation de la solution à l'aide de " + txt_methode + "...")
 
     #Puisque la résolution est de nature aléatoire, il y aura plusieurs itérations de celle-ci pendant une période de temps fixe
     # ou sur un nombre d'itérations maximum:
     start = time.time()
     temps = 0
     iteration = 0
-    if methode == "1":
-        temps_max = 120
-        iteration_max = 10000
-
-    else:
-        temps_max = 60
-        iteration_max = 1000
-
 
     #Solutioner le problème une première fois:
 
@@ -79,7 +71,8 @@ def main():
     #Si la valeur de la fonction objectif est plus petite que la précédente, garder seulement cette solution et réitérer
     iteration = 0
 
-    while temps <= temps_max and iteration < iteration_max:
+    while temps <= temps_max:
+
         end = time.time()
         temps = end - start
         iteration += 1
@@ -116,6 +109,7 @@ def main():
                 sol = sol_temp
                 jour = jour_temp
 
+    #Sortie utilisateur
     print("\n" + str(iteration) + " solutions trouvées en " + str(temps)[:5] + " secondes.")
     print("\nTemps total pour faire l'entièreté des livraisons: " + str(jour) + " jours")
     print("\nMeilleure solution trouvée: ")

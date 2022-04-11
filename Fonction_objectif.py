@@ -13,6 +13,7 @@ def recherche_params(parametres, operateur):
 
 def calcul_temps_itineraire(solution, data, operateur, temps_gestion_noeuds):
     """Fonction permettant de calculer le temps associée à un itinéraire donné"""
+
     # Retrouver la solution de l'operateur à l'étude:
     chemin = solution[operateur]
 
@@ -42,7 +43,7 @@ def evaluation_operateur(solution, parametres, data, operateur, temps_gestion_no
     #Recherche dans les paramètres pour trouver les informations nécessaires:
     c_fixe, c_var = recherche_params(parametres, operateur)
 
-    #Calcul de la distance parcourue par l'operateur à l'étude:
+    #Calcul du temps nécessaire à l'operateur pour compléter son itinéraire:
     distance = calcul_temps_itineraire(solution, data, operateur, temps_gestion_noeuds)
 
     #Calcul du coût total de l'operateur
