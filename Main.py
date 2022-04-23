@@ -7,7 +7,7 @@ import Clark_Wright
 import Economies
 import Fonction_objectif
 import UI
-
+import Validate
 
 def main():
     """Fonction permettant de lancer la résolution du problème par l'heuristique de Clarke & Wright simplifié."""
@@ -49,6 +49,7 @@ def main():
                                                            temps_gestion_noeuds
                                                            )
 
+
         elif methode == "2":
             sol, state, jour = Clark_Wright.solve_probleme(data,
                                                            economies,
@@ -58,8 +59,13 @@ def main():
                                                            liste_noeuds,
                                                            temps_gestion_noeuds
                                                            )
+
         else:
             raise ValueError("Erreur inconnue.")
+
+        #Validation de la solution initiale
+        if Validate.validate(sol, parametres, liste_clees, liste_noeuds, data, temps_gestion_noeuds) is False:
+            state = False
 
     if state is False:
         raise ValueError("Le problème ne peut être solutionné avec les contraintes et les paramètres actuels.")
@@ -104,7 +110,9 @@ def main():
             #Fonction objectif
             val_sol_temp = Fonction_objectif.eval_solution(sol_temp, liste_clees, parametres,
                                                            data, temps_gestion_noeuds)
-            if val_sol_temp < val_sol:
+            if val_sol_temp < val_sol and Validate.validate(sol_temp, parametres,
+                                                            liste_clees, liste_noeuds,
+                                                            data, temps_gestion_noeuds) is True:
                 val_sol = val_sol_temp
                 sol = sol_temp
                 jour = jour_temp

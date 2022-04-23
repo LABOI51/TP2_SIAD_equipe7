@@ -82,6 +82,13 @@ def attribution_CW(economies, itineraires, clee_op, noeuds):
 def check_capacite(data, parametres, chemin_a_verifier, op_a_verifier, temps_gestion_noeuds):
     """Fonction vérifiant si l'itinéraire temporaire à évaluer est possible selon la capacité de l'opérateur."""
 
+
+    #Si le chemin est de seulement de 2 noeuds, cela implique qu'il s'agit seulement du noeud initial. La charge est
+    #donc nulle et il est établi que la charge respecte la capacité. Cela est seulement réellement applicable à la
+    #validation, mais est une mesure de prévention intéressante.
+    if len(chemin_a_verifier) == 2:
+        return True
+
     # Calculer d'abord la charge du chemin à vérifier:
     charge = 0
 
