@@ -5,8 +5,10 @@ def choix_methode():
         print("\nMéthodes ou heuristiques disponibles : ")
         print("1: Méthode aléatoire")
         print("2: Heuristique de Clarke & Wright modifié")
+        print("3: Optimisation par AMPL")
+
         methode = input("\nEntrer le numéro de la méthode à utiliser: ")
-        if methode in ["1", "2"]:
+        if methode in ["1", "2", "3"]:
              check = True
         else:
             print("\nVeuillez entrer un numéro de méthode valide.")

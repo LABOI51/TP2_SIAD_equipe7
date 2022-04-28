@@ -22,8 +22,10 @@ def main():
     methode, temps_max = UI.choix_methode()
     if methode == "1":
         txt_methode = "la méthode aléatoire"
-    else:
+    elif metode == "2":
         txt_methode = "l'heuristique de Clarke & Wright"
+    else:
+        txt_methode = "la résolution par AMPL"
 
     print("\nÉvaluation de la solution à l'aide de " + txt_methode + "...")
 
@@ -37,7 +39,7 @@ def main():
 
     # Solve
     state = False
-    while state is False and iteration <= 50:
+    while state is False and iteration <= 100:
         iteration += 1
 
         if methode == "1":
@@ -60,6 +62,8 @@ def main():
                                                            temps_gestion_noeuds
                                                            )
 
+        elif methode == "3":
+            sol, state, jour =
         else:
             raise ValueError("Erreur inconnue.")
 
@@ -105,14 +109,14 @@ def main():
         else:
             raise ValueError("Erreur inconnue.")
 
-        if state is True:
+        if state is True and Validate.validate(sol_temp, parametres, liste_clees, liste_noeuds,
+                                                            data, temps_gestion_noeuds) is True:
 
             #Fonction objectif
             val_sol_temp = Fonction_objectif.eval_solution(sol_temp, liste_clees, parametres,
                                                            data, temps_gestion_noeuds)
-            if val_sol_temp < val_sol and Validate.validate(sol_temp, parametres,
-                                                            liste_clees, liste_noeuds,
-                                                            data, temps_gestion_noeuds) is True:
+
+            if val_sol_temp < val_sol:
                 val_sol = val_sol_temp
                 sol = sol_temp
                 jour = jour_temp

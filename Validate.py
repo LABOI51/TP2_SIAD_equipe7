@@ -44,3 +44,5 @@ def validate(solution, parametres, liste_clees, liste_noeuds, data, temps_gestio
 
     #Si toutes les vérifications sont passées, la solution est considérée comme acceptable:
     return True
+
+
