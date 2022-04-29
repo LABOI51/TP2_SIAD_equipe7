@@ -9,14 +9,14 @@ import Economies
 import Fonction_objectif
 import UI
 import Validate
-
+import copy
 
 def main():
     """Fonction permettant de lancer la résolution du problème par l'heuristique de Clarke & Wright simplifié."""
 
     #Setup
-    path_ampl = "VOTRE PATH ICI"
     path = "DATA.xlsm"
+    path_ampl = "VOTRE PATH AMPL ICI"
     data, noeuds_1, noeuds_2, liste_noeuds, temps_gestion_noeuds = Lecture_distances.get_distance_data(path)
     parametres, itineraires, liste_clees = Lecture_operateurs.get_operateurs(path, liste_noeuds)
     economies = Economies.calcul_econ(data, noeuds_1, noeuds_2, liste_noeuds)
@@ -80,17 +80,18 @@ def main():
             for i in range(15):
                 for op in liste_clees:
                     setK.append(op[0] + "#" + str(op[1]) + " - " + str(i))
-            print(setK)
+
 
             CuH = []
             CFcamion = []
             CapCamion = []
-            for op in parametres:
+
+            for c, op in enumerate(parametres):
                 for i in range(op["Nombre d'effectifs"]):
-                    CuH.append(parametres[i]["Coûts variables"])
-                    CFcamion.append(parametres[i]["Coûts fixes"])
-                    CapCamion.append(parametres[i]["Capacité"])
-            print(CapCamion)
+                    CuH.append(parametres[c]["Coûts variables"])
+                    CFcamion.append(parametres[c]["Coûts fixes"])
+                    CapCamion.append(parametres[c]["Capacité"])
+
             CuH = CuH * 15
             CFcamion = CFcamion * 15
             CapCamion = CapCamion * 15
