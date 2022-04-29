@@ -5,7 +5,7 @@ def choix_methode():
         print("\nMéthodes ou heuristiques disponibles : ")
         print("1: Méthode aléatoire")
         print("2: Heuristique de Clarke & Wright modifié")
-        print("3: Optimisation par AMPL")
+        print("3: Optimisation par contraintes AMPL")
 
         methode = input("\nEntrer le numéro de la méthode à utiliser: ")
         if methode in ["1", "2", "3"]:
@@ -14,6 +14,7 @@ def choix_methode():
             print("\nVeuillez entrer un numéro de méthode valide.")
 
     check = False
+
     while check is False:
         temps_max = input("\nVeuillez entrer le temps de résolution (en secondes) à utiliser: ")
         try:
@@ -22,7 +23,6 @@ def choix_methode():
             else:
                 print("\nLe temps entré dépasse le maximum de 8h (28 800 secondes) ou est négatif. S'il vous-plaît "
                       "entrer une valeur entre 0 et 28 800 secondes.")
-
-        except TypeError:
+        except ValueError:
             print("\n L'entrée n'est pas valide. S'il vous plait réessayer.")
 

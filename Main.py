@@ -4,15 +4,18 @@ import Lecture_distances
 import Lecture_operateurs
 import Approche_alea
 import Clark_Wright
+from dataframe import Frame
 import Economies
 import Fonction_objectif
 import UI
 import Validate
 
+
 def main():
     """Fonction permettant de lancer la résolution du problème par l'heuristique de Clarke & Wright simplifié."""
 
     #Setup
+    path_ampl = "VOTRE PATH ICI"
     path = "DATA.xlsm"
     data, noeuds_1, noeuds_2, liste_noeuds, temps_gestion_noeuds = Lecture_distances.get_distance_data(path)
     parametres, itineraires, liste_clees = Lecture_operateurs.get_operateurs(path, liste_noeuds)
@@ -22,10 +25,10 @@ def main():
     methode, temps_max = UI.choix_methode()
     if methode == "1":
         txt_methode = "la méthode aléatoire"
-    elif metode == "2":
+    elif methode == "2":
         txt_methode = "l'heuristique de Clarke & Wright"
     else:
-        txt_methode = "la résolution par AMPL"
+        txt_methode = "la programmation par contraintes AMPL"
 
     print("\nÉvaluation de la solution à l'aide de " + txt_methode + "...")
 
@@ -63,7 +66,58 @@ def main():
                                                            )
 
         elif methode == "3":
-            sol, state, jour =
+            ###La méthode 3 ne demande à être lancée une seule fois. La préparation et le lancement se fait donc ici,
+            ###suivi de l'appel de la fonction exit() permettant de quitter le programme.
+
+            #L'objet Frame a besoin d'attributs de données. Ceux receuillis initialement seront donc transformés:
+            n = len(liste_noeuds)-1
+            setI = []
+            setJ = []
+            for i in range(len(liste_noeuds)):
+                setI.append(i)
+                setJ.append(i)
+            setK = []
+            for i in range(15):
+                for op in liste_clees:
+                    setK.append(op[0] + "#" + str(op[1]) + " - " + str(i))
+            print(setK)
+
+            CuH = []
+            CFcamion = []
+            CapCamion = []
+            for op in parametres:
+                for i in range(op["Nombre d'effectifs"]):
+                    CuH.append(parametres[i]["Coûts variables"])
+                    CFcamion.append(parametres[i]["Coûts fixes"])
+                    CapCamion.append(parametres[i]["Capacité"])
+            print(CapCamion)
+            CuH = CuH * 15
+            CFcamion = CFcamion * 15
+            CapCamion = CapCamion * 15
+            TempsC = []
+            for nd in liste_noeuds:
+                TempsC.append(temps_gestion_noeuds[nd])
+            TempsC = TempsC * 15
+            #Création de la matrice de distances (cette matrice est symétrique, contrairement à la matrice triangulaire
+            #nommée "data):
+            TempsD = []
+            for c, i in enumerate(liste_noeuds):
+                TempsD.append([])
+                for j in liste_noeuds:
+                    if i == j:
+                        TempsD[c].append(0)
+                    else:
+                        try:
+                            TempsD[c].append(data[(i,j)])
+                        except KeyError:
+                            TempsD[c].append(data[(j,i)])
+
+            resolution = Frame(setK, setI, setJ, n, CuH, CFcamion, CapCamion, TempsC, TempsD)
+
+
+            resolution.solve_probleme(temps_max, path_ampl)
+            exit()
+
         else:
             raise ValueError("Erreur inconnue.")
 
